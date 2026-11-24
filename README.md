@@ -143,7 +143,7 @@ batch size 32, learning rate $10^{-3}$, 30 epochs, and seed 7. Energy and force
 losses are combined as
 
 $$
-\mathcal L=0.01\\mathcal L_E+0.99\\mathcal L_F.
+\mathcal L=0.01\\mathcal L_E+0.99\\mathcal L_F
 $$
 
 The numerical weights are a teaching choice, not universal physical constants.
