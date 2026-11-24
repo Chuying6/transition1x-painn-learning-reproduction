@@ -1,0 +1,57 @@
+.DS_Store
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.cache/
+tmp/
+
+# Upstream repositories and downloaded datasets
+external/
+data/
+*.h5
+*.hdf5
+*.db
+*.xyz
+
+# Training products
+checkpoints/
+runs/
+outputs/
+wandb/
+*.ckpt
+*.pt
+*.pth
+
+# Large figure exports and QA-only overlays stay local
+figures/*.tiff
+figures/*.collision-audit.pdf
+figures/*.collision-audit.json
+figures/*.alignment.json
+figures/*.alignment.svg
+
+# Local logs and editor state
+*.log
+.idea/
+.vscode/
+
+# Local pre-publication review records
+docs/CODE_REVIEW_CHECKLIST.md
+docs/REPRODUCTION_PLAN.md
+docs/GITHUB_PUBLICATION_PLAN.md
+docs/README_WRITING_GUIDE.md
+results/REPRODUCIBILITY_AUDIT.md
+
+# LaTeX auxiliary files (keep the reviewed report/main.pdf)
+report/*.aux
+report/*.bbl
+report/*.bcf
+report/*.blg
+report/*.fdb_latexmk
+report/*.fls
+report/*.out
+report/*.run.xml
+report/*.toc
+report/*.synctex*
+report/*.xdv
+

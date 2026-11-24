@@ -1,0 +1,254 @@
+{
+  "training_hdf5": "data/mini_expanded_transition1x.h5",
+  "evaluation_hdf5": "data/mini_diverse_equal_transition1x.h5",
+  "checkpoint": "checkpoints/expanded_mini_painn_complete.pt",
+  "device": "cpu",
+  "best_epoch_by_val_force": 23,
+  "history": [
+    {
+      "epoch": 1,
+      "train_energy_rmse_eV": 1.5219682288548217,
+      "train_force_rmse_eV_per_A": 0.2975299376979542,
+      "val_energy_rmse_eV": 1.683331412521989,
+      "val_relative_energy_rmse_eV": 1.5472775441614606,
+      "val_force_rmse_eV_per_A": 0.33504441380500793
+    },
+    {
+      "epoch": 2,
+      "train_energy_rmse_eV": 1.1254964703548602,
+      "train_force_rmse_eV_per_A": 0.2570394711081442,
+      "val_energy_rmse_eV": 1.2302121224557874,
+      "val_relative_energy_rmse_eV": 1.2450827018486528,
+      "val_force_rmse_eV_per_A": 0.2963863015174866
+    },
+    {
+      "epoch": 3,
+      "train_energy_rmse_eV": 0.9106146403799129,
+      "train_force_rmse_eV_per_A": 0.2279149867448058,
+      "val_energy_rmse_eV": 1.1458677012452914,
+      "val_relative_energy_rmse_eV": 1.1432703793572496,
+      "val_force_rmse_eV_per_A": 0.28364938497543335
+    },
+    {
+      "epoch": 4,
+      "train_energy_rmse_eV": 0.7819284284881399,
+      "train_force_rmse_eV_per_A": 0.2100893253743811,
+      "val_energy_rmse_eV": 1.0432264078289564,
+      "val_relative_energy_rmse_eV": 1.032366315402134,
+      "val_force_rmse_eV_per_A": 0.26432809233665466
+    },
+    {
+      "epoch": 5,
+      "train_energy_rmse_eV": 0.7202540523222895,
+      "train_force_rmse_eV_per_A": 0.19663718364136826,
+      "val_energy_rmse_eV": 1.0977483154652259,
+      "val_relative_energy_rmse_eV": 1.0473894780930297,
+      "val_force_rmse_eV_per_A": 0.2590068280696869
+    },
+    {
+      "epoch": 6,
+      "train_energy_rmse_eV": 0.6555221147499832,
+      "train_force_rmse_eV_per_A": 0.18734321292843398,
+      "val_energy_rmse_eV": 1.0179351492108493,
+      "val_relative_energy_rmse_eV": 1.0713225397189325,
+      "val_force_rmse_eV_per_A": 0.26343637704849243
+    },
+    {
+      "epoch": 7,
+      "train_energy_rmse_eV": 0.6425446411141561,
+      "train_force_rmse_eV_per_A": 0.18333852628532282,
+      "val_energy_rmse_eV": 0.9553969899496955,
+      "val_relative_energy_rmse_eV": 1.0621625120502611,
+      "val_force_rmse_eV_per_A": 0.25823771953582764
+    },
+    {
+      "epoch": 8,
+      "train_energy_rmse_eV": 0.6045693615006947,
+      "train_force_rmse_eV_per_A": 0.17496983590354742,
+      "val_energy_rmse_eV": 0.9777767813264467,
+      "val_relative_energy_rmse_eV": 0.9373341012933328,
+      "val_force_rmse_eV_per_A": 0.25617384910583496
+    },
+    {
+      "epoch": 9,
+      "train_energy_rmse_eV": 0.5553321415603766,
+      "train_force_rmse_eV_per_A": 0.1678499115496288,
+      "val_energy_rmse_eV": 0.9727579966972728,
+      "val_relative_energy_rmse_eV": 1.0041057744004114,
+      "val_force_rmse_eV_per_A": 0.24567316472530365
+    },
+    {
+      "epoch": 10,
+      "train_energy_rmse_eV": 0.5465420430351527,
+      "train_force_rmse_eV_per_A": 0.16234799937970923,
+      "val_energy_rmse_eV": 0.8930760490635531,
+      "val_relative_energy_rmse_eV": 0.9104658301899847,
+      "val_force_rmse_eV_per_A": 0.25301650166511536
+    },
+    {
+      "epoch": 11,
+      "train_energy_rmse_eV": 0.5174812446614345,
+      "train_force_rmse_eV_per_A": 0.15900500420170863,
+      "val_energy_rmse_eV": 0.8102730007714077,
+      "val_relative_energy_rmse_eV": 0.7939698698534698,
+      "val_force_rmse_eV_per_A": 0.256000280380249
+    },
+    {
+      "epoch": 12,
+      "train_energy_rmse_eV": 0.5067595419578018,
+      "train_force_rmse_eV_per_A": 0.155681550183237,
+      "val_energy_rmse_eV": 0.9009917192343719,
+      "val_relative_energy_rmse_eV": 0.9529222676302136,
+      "val_force_rmse_eV_per_A": 0.24770738184452057
+    },
+    {
+      "epoch": 13,
+      "train_energy_rmse_eV": 0.5142656313069328,
+      "train_force_rmse_eV_per_A": 0.157547483827919,
+      "val_energy_rmse_eV": 0.8757691515178319,
+      "val_relative_energy_rmse_eV": 0.8461268018041518,
+      "val_force_rmse_eV_per_A": 0.24354776740074158
+    },
+    {
+      "epoch": 14,
+      "train_energy_rmse_eV": 0.4782345661262868,
+      "train_force_rmse_eV_per_A": 0.1493024686187473,
+      "val_energy_rmse_eV": 0.8841431687967927,
+      "val_relative_energy_rmse_eV": 0.9022178935100859,
+      "val_force_rmse_eV_per_A": 0.2517683804035187
+    },
+    {
+      "epoch": 15,
+      "train_energy_rmse_eV": 0.4637738249908009,
+      "train_force_rmse_eV_per_A": 0.14707548727180375,
+      "val_energy_rmse_eV": 0.8568840651342371,
+      "val_relative_energy_rmse_eV": 0.9375503315600515,
+      "val_force_rmse_eV_per_A": 0.2533401846885681
+    },
+    {
+      "epoch": 16,
+      "train_energy_rmse_eV": 0.46428664570009004,
+      "train_force_rmse_eV_per_A": 0.14649184426023104,
+      "val_energy_rmse_eV": 0.7556580275946307,
+      "val_relative_energy_rmse_eV": 0.7657733366120085,
+      "val_force_rmse_eV_per_A": 0.2420075237751007
+    },
+    {
+      "epoch": 17,
+      "train_energy_rmse_eV": 0.4542801370272819,
+      "train_force_rmse_eV_per_A": 0.14520839432670984,
+      "val_energy_rmse_eV": 0.6795027678614013,
+      "val_relative_energy_rmse_eV": 0.6364962106552121,
+      "val_force_rmse_eV_per_A": 0.29928579926490784
+    },
+    {
+      "epoch": 18,
+      "train_energy_rmse_eV": 0.499483485840405,
+      "train_force_rmse_eV_per_A": 0.1536580807676007,
+      "val_energy_rmse_eV": 0.8291059590676173,
+      "val_relative_energy_rmse_eV": 0.8641274384387159,
+      "val_force_rmse_eV_per_A": 0.25708991289138794
+    },
+    {
+      "epoch": 19,
+      "train_energy_rmse_eV": 0.4300143512494816,
+      "train_force_rmse_eV_per_A": 0.13813706302462114,
+      "val_energy_rmse_eV": 0.7838124613790398,
+      "val_relative_energy_rmse_eV": 0.8535704836862539,
+      "val_force_rmse_eV_per_A": 0.2603910267353058
+    },
+    {
+      "epoch": 20,
+      "train_energy_rmse_eV": 0.401643462241658,
+      "train_force_rmse_eV_per_A": 0.13384756370223552,
+      "val_energy_rmse_eV": 0.7553650378168666,
+      "val_relative_energy_rmse_eV": 0.7684900085330483,
+      "val_force_rmse_eV_per_A": 0.25570234656333923
+    },
+    {
+      "epoch": 21,
+      "train_energy_rmse_eV": 0.4034556257449271,
+      "train_force_rmse_eV_per_A": 0.1326563273034818,
+      "val_energy_rmse_eV": 0.7305619870588499,
+      "val_relative_energy_rmse_eV": 0.7552751111544544,
+      "val_force_rmse_eV_per_A": 0.24149282276630402
+    },
+    {
+      "epoch": 22,
+      "train_energy_rmse_eV": 0.39879576455503357,
+      "train_force_rmse_eV_per_A": 0.13104414126322544,
+      "val_energy_rmse_eV": 0.9228182113825183,
+      "val_relative_energy_rmse_eV": 0.8337337975635266,
+      "val_force_rmse_eV_per_A": 0.2733275592327118
+    },
+    {
+      "epoch": 23,
+      "train_energy_rmse_eV": 0.3931981822488593,
+      "train_force_rmse_eV_per_A": 0.13075114152240574,
+      "val_energy_rmse_eV": 0.8265812135317945,
+      "val_relative_energy_rmse_eV": 0.7986131614744353,
+      "val_force_rmse_eV_per_A": 0.23555779457092285
+    },
+    {
+      "epoch": 24,
+      "train_energy_rmse_eV": 0.3940537692995635,
+      "train_force_rmse_eV_per_A": 0.13010874033885902,
+      "val_energy_rmse_eV": 0.7724937194342202,
+      "val_relative_energy_rmse_eV": 0.8710229292939983,
+      "val_force_rmse_eV_per_A": 0.25046443939208984
+    },
+    {
+      "epoch": 25,
+      "train_energy_rmse_eV": 0.3976812981009454,
+      "train_force_rmse_eV_per_A": 0.13073519087321042,
+      "val_energy_rmse_eV": 0.7980189998805828,
+      "val_relative_energy_rmse_eV": 0.7330226533170099,
+      "val_force_rmse_eV_per_A": 0.27104800939559937
+    },
+    {
+      "epoch": 26,
+      "train_energy_rmse_eV": 0.40875205051575114,
+      "train_force_rmse_eV_per_A": 0.13327708845767847,
+      "val_energy_rmse_eV": 0.8095102369696955,
+      "val_relative_energy_rmse_eV": 0.8702279469735359,
+      "val_force_rmse_eV_per_A": 0.25473707914352417
+    },
+    {
+      "epoch": 27,
+      "train_energy_rmse_eV": 0.3934803035318361,
+      "train_force_rmse_eV_per_A": 0.12995700152441142,
+      "val_energy_rmse_eV": 0.7532627280371311,
+      "val_relative_energy_rmse_eV": 0.7448199442622514,
+      "val_force_rmse_eV_per_A": 0.27246782183647156
+    },
+    {
+      "epoch": 28,
+      "train_energy_rmse_eV": 0.4046747457575832,
+      "train_force_rmse_eV_per_A": 0.13180992144275022,
+      "val_energy_rmse_eV": 0.7281920538539639,
+      "val_relative_energy_rmse_eV": 0.7718393882572306,
+      "val_force_rmse_eV_per_A": 0.2618555426597595
+    },
+    {
+      "epoch": 29,
+      "train_energy_rmse_eV": 0.41809995457571003,
+      "train_force_rmse_eV_per_A": 0.1338358788618214,
+      "val_energy_rmse_eV": 0.7815397181931468,
+      "val_relative_energy_rmse_eV": 0.828002194988415,
+      "val_force_rmse_eV_per_A": 0.24674315750598907
+    },
+    {
+      "epoch": 30,
+      "train_energy_rmse_eV": 0.3688771059272307,
+      "train_force_rmse_eV_per_A": 0.12296135886565415,
+      "val_energy_rmse_eV": 0.7323703297998709,
+      "val_relative_energy_rmse_eV": 0.7922843965619781,
+      "val_force_rmse_eV_per_A": 0.2414340227842331
+    }
+  ],
+  "test": {
+    "energy_rmse_eV": 0.4324566613522717,
+    "relative_energy_rmse_eV": 0.399638179278155,
+    "force_rmse_eV_per_A": 0.16221708059310913
+  }
+}

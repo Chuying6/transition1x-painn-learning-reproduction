@@ -1,0 +1,6 @@
+# Official framework used for the real mini-Transition1x reproduction.
+schnetpack==2.3.0
+ase>=3.21
+h5py
+numpy>=2.0
+

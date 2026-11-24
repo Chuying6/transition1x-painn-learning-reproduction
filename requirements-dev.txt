@@ -1,0 +1,5 @@
+-r requirements-official-painn.txt
+
+# Test dependency used for local verification and future CI.
+pytest==9.0.2
+matplotlib==3.11.2

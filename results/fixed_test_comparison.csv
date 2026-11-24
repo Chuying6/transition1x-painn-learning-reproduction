@@ -1,0 +1,4 @@
+training_strategy,train_configurations,train_formulas,train_reactions,evaluation_hdf5,evaluation_sha256,test_configurations,test_formulas,test_reactions,energy_rmse_eV,relative_energy_rmse_eV,force_rmse_eV_per_A
+Narrow,2910,4,12,mini_diverse_equal_transition1x.h5,8959cddcb252128f4b23083e1c88cdcb51a000e1b4ca0f9a10b2a2bd6eb4a820,150,8,15,6.614619,1.348651,0.604176
+Diverse equal-size,3060,155,306,mini_diverse_equal_transition1x.h5,8959cddcb252128f4b23083e1c88cdcb51a000e1b4ca0f9a10b2a2bd6eb4a820,150,8,15,0.562489,0.582568,0.218354
+Expanded diverse,10690,155,1069,mini_diverse_equal_transition1x.h5,8959cddcb252128f4b23083e1c88cdcb51a000e1b4ca0f9a10b2a2bd6eb4a820,150,8,15,0.432457,0.399638,0.162217
