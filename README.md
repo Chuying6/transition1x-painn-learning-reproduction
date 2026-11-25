@@ -74,6 +74,13 @@ The expanded run reached its lowest validation force RMSE at epoch 23.
 
 ![Fixed-test comparison of the three training strategies](figures/fixed_test_comparison.png)
 
+![Component-wise test-force parity and residuals](figures/expanded_test_force_parity.png)
+
+The best expanded-data checkpoint captures the overall test-force correlation
+($R^2=0.817$), but its component-wise RMSE of 0.162 eV/Å and the residual trend show
+that large force magnitudes are systematically compressed toward zero. The result is
+therefore a useful learning baseline, not a production-quality reactive potential.
+
 The complete result tables are stored in [`results/`](results/), and the longer
 scientific discussion is available in [`report/main.pdf`](report/main.pdf).
 
@@ -174,6 +181,36 @@ python src/train_mini_t1x_painn.py data/mini_expanded_transition1x.h5 \
 
 Exact floating-point results can vary with package versions, hardware, and backend
 even when the sampling and training seed are fixed.
+
+The 30-epoch commands above reproduce the reported controlled comparison. For a
+follow-up optimization run, the trainer also supports validation-force learning-rate
+reduction and early stopping. A suitable starting point is:
+
+```bash
+python src/train_mini_t1x_painn.py data/mini_expanded_transition1x.h5 \
+  --eval-hdf5 data/mini_diverse_equal_transition1x.h5 \
+  --epochs 150 --lr-patience 8 --lr-factor 0.5 \
+  --min-learning-rate 1e-5 --early-stopping-patience 25 \
+  --seed 7 --device cpu \
+  --checkpoint checkpoints/expanded_mini_painn_long.pt \
+  --metrics-json results/expanded_training_long.json
+```
+
+This longer run is a proposed follow-up, not the source of the metrics currently
+reported above. Multiple seeds are still required before treating differences as
+robust.
+
+Export component-wise force predictions from the existing best checkpoint and render
+the training, fixed-test, and force-parity figures with:
+
+```bash
+python scripts/export_force_predictions.py --device cpu
+python scripts/plot_training_results.py \
+  --evaluation-hdf5 data/mini_diverse_equal_transition1x.h5
+```
+
+The export preserves the reference value, prediction, residual, atom, Cartesian
+component, and reaction identifier for every test-force component.
 
 ## Learning test
 

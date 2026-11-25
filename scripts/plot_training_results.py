@@ -3,8 +3,10 @@
 
 Figure 1 asks whether the expanded-data PaiNN training run converged stably.
 Figure 2 asks whether increasing reaction coverage improved generalization on
-one fixed held-out split.  The figures inherit only the visual grammar of the
-figures4papers examples; all code and plotted values are project-specific.
+one fixed held-out split. Figure 3 compares predicted and reference test-force
+components and exposes force-dependent residuals. The figures inherit only the
+visual grammar of the figures4papers examples; all code and plotted values are
+project-specific.
 """
 
 from __future__ import annotations
@@ -363,6 +365,91 @@ def plot_fixed_test_comparison(
     save_figure(fig, output_dir / "fixed_test_comparison", ["a", "b", "c"])
 
 
+def load_force_predictions(path: Path) -> tuple[np.ndarray, np.ndarray]:
+    rows = read_numeric_csv(path)
+    try:
+        reference = np.asarray(
+            [float(row["reference_force_eV_per_A"]) for row in rows]
+        )
+        predicted = np.asarray(
+            [float(row["predicted_force_eV_per_A"]) for row in rows]
+        )
+    except (KeyError, ValueError) as exc:
+        raise ValueError("force prediction CSV contains invalid numeric data") from exc
+    if not np.all(np.isfinite(reference)) or not np.all(np.isfinite(predicted)):
+        raise ValueError("force predictions must be finite")
+    if len(reference) < 2 or np.ptp(reference) == 0.0:
+        raise ValueError("force predictions require at least two distinct references")
+    return reference, predicted
+
+
+def plot_force_parity(force_csv: Path, output_dir: Path) -> None:
+    reference, predicted = load_force_predictions(force_csv)
+    residual = predicted - reference
+    rmse = float(np.sqrt(np.mean(residual**2)))
+    r_squared = float(
+        1.0 - np.sum(residual**2) / np.sum((reference - np.mean(reference)) ** 2)
+    )
+    limit = float(max(np.max(np.abs(reference)), np.max(np.abs(predicted))))
+    padding = max(0.05 * limit, 0.02)
+    bounds = (-limit - padding, limit + padding)
+
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.05))
+    axes[0].hexbin(
+        reference,
+        predicted,
+        gridsize=70,
+        mincnt=1,
+        bins="log",
+        cmap="Blues",
+        linewidths=0.0,
+    )
+    axes[0].plot(bounds, bounds, color=PALETTE["red"], linestyle="--", linewidth=1.2)
+    axes[0].set(
+        xlim=bounds,
+        ylim=bounds,
+        aspect="equal",
+        xlabel="Reference force component (eV/Å)",
+        ylabel="Predicted force component (eV/Å)",
+        title="Test-force parity",
+    )
+    axes[0].text(
+        0.04,
+        0.96,
+        f"RMSE = {rmse:.3f} eV/Å\n$R^2$ = {r_squared:.3f}\n$n$ = {len(reference):,}",
+        transform=axes[0].transAxes,
+        ha="left",
+        va="top",
+        fontsize=6.5,
+    )
+    add_panel_label(axes[0], "a")
+
+    axes[1].hexbin(
+        reference,
+        residual,
+        gridsize=70,
+        mincnt=1,
+        bins="log",
+        cmap="Blues",
+        linewidths=0.0,
+    )
+    axes[1].axhline(0.0, color=PALETTE["red"], linestyle="--", linewidth=1.2)
+    residual_limit = float(np.max(np.abs(residual)))
+    residual_padding = max(0.05 * residual_limit, 0.02)
+    axes[1].set(
+        xlim=bounds,
+        ylim=(-residual_limit - residual_padding, residual_limit + residual_padding),
+        xlabel="Reference force component (eV/Å)",
+        ylabel="Prediction residual (eV/Å)",
+        title="Force residuals",
+    )
+    add_panel_label(axes[1], "b")
+
+    for ax in axes:
+        ax.tick_params(direction="out", length=3, width=0.8)
+    save_figure(fig, output_dir / "expanded_test_force_parity", ["a", "b"])
+
+
 def parse_args() -> argparse.Namespace:
     project_root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(description=__doc__)
@@ -388,6 +475,11 @@ def parse_args() -> argparse.Namespace:
         help="optional local HDF5 file whose SHA-256 is checked against the CSV",
     )
     parser.add_argument(
+        "--force-predictions",
+        type=Path,
+        default=project_root / "results" / "expanded_test_force_predictions.csv",
+    )
+    parser.add_argument(
         "--output-dir", type=Path, default=project_root / "figures"
     )
     return parser.parse_args()
@@ -398,6 +490,7 @@ def main() -> int:
     apply_publication_style()
     plot_training_curves(args.history, args.output_dir, args.history_json)
     plot_fixed_test_comparison(args.comparison, args.output_dir, args.evaluation_hdf5)
+    plot_force_parity(args.force_predictions, args.output_dir)
     return 0
 
 

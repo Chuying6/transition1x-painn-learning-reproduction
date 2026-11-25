@@ -282,6 +282,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--features", type=int, default=64)
     parser.add_argument("--interactions", type=int, default=3)
     parser.add_argument("--learning-rate", type=float, default=1.0e-3)
+    parser.add_argument(
+        "--lr-patience",
+        type=int,
+        default=0,
+        help="validation-force plateau patience; 0 disables learning-rate reduction",
+    )
+    parser.add_argument("--lr-factor", type=float, default=0.5)
+    parser.add_argument("--min-learning-rate", type=float, default=1.0e-5)
+    parser.add_argument(
+        "--early-stopping-patience",
+        type=int,
+        default=0,
+        help="epochs without validation-force improvement; 0 disables early stopping",
+    )
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--device", choices=("auto", "cpu", "mps"), default="auto")
     parser.add_argument("--checkpoint", type=Path, default=Path("checkpoints/mini_painn.pt"))
@@ -306,6 +320,12 @@ def main() -> int:
         raise ValueError("features and interactions must both be positive")
     if args.learning_rate <= 0.0:
         raise ValueError(f"learning rate must be positive, got {args.learning_rate}")
+    if args.lr_patience < 0 or args.early_stopping_patience < 0:
+        raise ValueError("scheduler and early-stopping patience must be non-negative")
+    if not 0.0 < args.lr_factor < 1.0:
+        raise ValueError(f"lr factor must lie between 0 and 1, got {args.lr_factor}")
+    if not 0.0 < args.min_learning_rate <= args.learning_rate:
+        raise ValueError("minimum learning rate must be positive and no larger than the initial rate")
     if args.seed < 0:
         raise ValueError(f"seed must be non-negative, got {args.seed}")
     if not args.hdf5.is_file():
@@ -344,8 +364,18 @@ def main() -> int:
         baselines, args.cutoff, args.features, args.interactions
     ).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
+    scheduler = None
+    if args.lr_patience > 0:
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode="min",
+            factor=args.lr_factor,
+            patience=args.lr_patience,
+            min_lr=args.min_learning_rate,
+        )
     best_val = math.inf
     best_epoch = 0
+    epochs_without_improvement = 0
     history: list[dict[str, float | int]] = []
 
     print(f"device: {device}", flush=True)
@@ -398,6 +428,7 @@ def main() -> int:
                     "relative_energy_rmse"
                 ],
                 "val_force_rmse_eV_per_A": val_metrics["force_rmse"],
+                "learning_rate": optimizer.param_groups[0]["lr"],
             }
         )
         print(
@@ -411,8 +442,24 @@ def main() -> int:
         if val_metrics["force_rmse"] < best_val:
             best_val = val_metrics["force_rmse"]
             best_epoch = epoch
+            epochs_without_improvement = 0
             args.checkpoint.parent.mkdir(parents=True, exist_ok=True)
             torch.save(model.state_dict(), args.checkpoint)
+        else:
+            epochs_without_improvement += 1
+
+        if scheduler is not None:
+            scheduler.step(val_metrics["force_rmse"])
+        if (
+            args.early_stopping_patience > 0
+            and epochs_without_improvement >= args.early_stopping_patience
+        ):
+            print(
+                f"early stopping at epoch {epoch}; best validation force was "
+                f"{best_val:.4f} at epoch {best_epoch}",
+                flush=True,
+            )
+            break
 
     if best_epoch == 0:
         raise RuntimeError("training produced no finite validation checkpoint")
@@ -445,6 +492,10 @@ def main() -> int:
                 "features": args.features,
                 "interactions": args.interactions,
                 "learning_rate": args.learning_rate,
+                "lr_patience": args.lr_patience,
+                "lr_factor": args.lr_factor,
+                "min_learning_rate": args.min_learning_rate,
+                "early_stopping_patience": args.early_stopping_patience,
                 "energy_loss_weight": 0.01,
                 "force_loss_weight": 0.99,
             },
@@ -460,6 +511,7 @@ def main() -> int:
                 "h5py": h5py.__version__,
             },
             "best_epoch_by_val_force": best_epoch,
+            "epochs_completed": len(history),
             "history": history,
             "test": {
                 "energy_rmse_eV": test_metrics["energy_rmse"],

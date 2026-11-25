@@ -13,6 +13,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
 from plot_training_results import (  # noqa: E402
     load_fixed_test_comparison,
+    load_force_predictions,
     load_training_history,
 )
 
@@ -122,3 +123,30 @@ def test_comparison_rejects_missing_or_duplicate_strategy(tmp_path: Path) -> Non
     write_csv(path, rows)
     with pytest.raises(ValueError, match="each expected training strategy once"):
         load_fixed_test_comparison(path)
+
+
+def test_force_predictions_load_reference_and_prediction_columns(tmp_path: Path) -> None:
+    path = tmp_path / "forces.csv"
+    write_csv(
+        path,
+        [
+            {"reference_force_eV_per_A": -1.0, "predicted_force_eV_per_A": -0.8},
+            {"reference_force_eV_per_A": 1.0, "predicted_force_eV_per_A": 0.9},
+        ],
+    )
+    reference, predicted = load_force_predictions(path)
+    assert reference.tolist() == [-1.0, 1.0]
+    assert predicted.tolist() == [-0.8, 0.9]
+
+
+def test_force_predictions_reject_constant_references(tmp_path: Path) -> None:
+    path = tmp_path / "forces.csv"
+    write_csv(
+        path,
+        [
+            {"reference_force_eV_per_A": 1.0, "predicted_force_eV_per_A": 0.8},
+            {"reference_force_eV_per_A": 1.0, "predicted_force_eV_per_A": 0.9},
+        ],
+    )
+    with pytest.raises(ValueError, match="distinct references"):
+        load_force_predictions(path)

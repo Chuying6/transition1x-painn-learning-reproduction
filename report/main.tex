@@ -23,14 +23,14 @@
 
 \title{\textbf{A Small-Scale PaiNN Study on Transition1x}}
 \author{\reportauthor}
-\date{November 23, 2026}
+\date{November 25, 2026}
 
 \begin{document}
 \pagestyle{plain}
 \maketitle
 
 
-\section{Scientific question}
+\section{Research question}
 
 Under the Born--Oppenheimer approximation, the electronic problem is solved at fixed
 nuclear coordinates $\bm R$,
@@ -57,7 +57,7 @@ size affect generalization of a compact PaiNN energy-and-force model on held-out
 Transition1x formulas and reactions?
 
 
-\section{Reaction-path data}
+\section{Dataset and data splits}
 
 Transition1x was designed to cover reactive regions rather than only equilibrium
 molecules \citep{schreiner2022transition1x}. Its workflow relaxes reactant and product
@@ -86,7 +86,7 @@ risk that nearly identical path images appear in both training and test data.
 
 
 
-\section{Model and learning objective}
+\section{Model architecture}
 
 The representation is PaiNN, an equivariant message-passing architecture that updates
 atomwise scalar and vector features \citep{schutt2021painn}. The implementation uses
@@ -102,7 +102,11 @@ the same energy model,
 \begin{equation}
   \bm F_i^{\theta} = -\frac{\partial E_{\theta}}{\partial \bm R_i}.
 \end{equation}
-The compact training objective is
+
+
+\section{Training setup}
+
+The compact training loss is
 \begin{equation}
   \mathcal L = 0.01\,\mathcal L_E + 0.99\,\mathcal L_F.
 \end{equation}
@@ -127,9 +131,6 @@ The force RMSE averages over all atoms and Cartesian components,
   \sum_s\sum_{i=1}^{N_s}\sum_{\alpha\in\{x,y,z\}}
   \left(F_{si\alpha}^{\theta}-F_{si\alpha}^{\mathrm{ref}}\right)^2}.
 \end{equation}
-
-
-\section{Experimental design}
 
 All models were evaluated on the same fixed test split containing 150 configurations,
 8 formulas, and 15 reactions. The compact PaiNN used 64 features, three interaction
@@ -160,9 +161,11 @@ The second keeps formula coverage fixed while increasing reactions and configura
 
 \section{Results}
 
+\subsection{Training behavior}
+
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{expanded_training_curves.pdf}
+  \includegraphics[width=\textwidth]{expanded_training_curves.png}
   \caption{Training and validation RMSE for the complete 30-epoch expanded-data run.
   The checkpoint with the lowest validation force RMSE occurs at epoch 23. Lines show
   one random seed and do not represent uncertainty across repeated runs.}
@@ -173,9 +176,11 @@ At epoch 30, the training force RMSE is \SI{0.123}{eV\per\angstromunit}, while t
 validation force RMSE is \SI{0.241}{eV\per\angstromunit}. The best validation force RMSE
 is \SI{0.236}{eV\per\angstromunit} at epoch 23.
 
+\subsection{Validation and test results}
+
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{fixed_test_comparison.pdf}
+  \includegraphics[width=\textwidth]{fixed_test_comparison.png}
   \caption{Fixed-test comparison of the three training strategies. All panels use a
   logarithmic vertical axis and the same held-out split. Lower values are better.}
   \label{fig:comparison}
@@ -203,8 +208,19 @@ reduces absolute energy RMSE by approximately 91.5\%, reaction-relative energy R
 by 56.8\%, and force RMSE by 63.9\%. Expanding the diverse subset further reduces
 these metrics by approximately 23\%, 31\%, and 26\%, respectively.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{expanded_test_force_parity.png}
+  \caption{Component-wise force predictions from the best expanded-data checkpoint
+  on the fixed test split. Panel (a) compares all 4,350 predicted and reference
+  Cartesian force components; the dashed line is $y=x$. Panel (b) plots prediction
+  residuals against the reference force. The component-wise RMSE is
+  \SI{0.162}{eV\per\angstromunit} and $R^2=0.817$.}
+  \label{fig:force-parity}
+\end{figure}
 
-\section{Analysis and discussion}
+
+\section{Error analysis and limitations}
 
 \subsection{Energy and force optima do not coincide}
 
@@ -225,6 +241,32 @@ overfitting. Because the intended downstream tasks include geometry and reaction
 calculations, the current checkpoint is selected by validation force RMSE. A future
 barrier-focused model should use a combined criterion that also protects relative
 energy accuracy.
+
+\subsection{Training duration is not determined by epoch count alone}
+
+Although 30 epochs may appear short, the expanded run contains about 10,020 parameter
+updates. The validation force error is already fluctuating around a plateau while the
+training error continues to decrease, so simply extending the same fixed
+$10^{-3}$ learning rate would not establish better generalization. A follow-up run
+should allow more epochs together with validation-based learning-rate reduction,
+early stopping, and repeated random seeds. The present 30-epoch comparison should
+therefore be interpreted as an initial controlled study rather than a fully optimized
+benchmark.
+
+\subsection{Large-force components are systematically underestimated}
+
+Figure~\ref{fig:force-parity} shows that the model captures the overall force
+correlation ($R^2=0.817$), but the agreement is only moderate. Most components lie
+near zero and therefore dominate the pooled metrics. The scatter widens as the
+reference-force magnitude increases, while the residuals show a sign-dependent bias:
+large positive components are generally underpredicted and large negative components
+are predicted as insufficiently negative. The model therefore compresses force
+magnitudes toward zero. Together with a component-wise RMSE of
+\SI{0.162}{eV\per\angstromunit} and several errors above
+\SI{1}{eV\per\angstromunit}, this indicates a useful learning baseline rather than a
+production-quality reactive potential. Per-reaction and path-resolved analysis is
+needed to locate the difficult high-force configurations hidden by the aggregate
+metric.
 
 \subsection{Validation-test difficulty mismatch}
 
